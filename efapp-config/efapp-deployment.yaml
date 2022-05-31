@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: efapp
+spec:
+  selector:
+    matchLabels:
+      app: efapp
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: efapp
+    spec:
+      containers:
+      - image: jensevent/ef_app:latest
+        resources:
+          limits:
+            cpu: "0.5"
+          requests:
+            cpu: "0.3"
+        
+        name: efapp
+        env:
+        - name: "SQLConn"
+          value: "Server=10.96.0.22,1433;Database=TestDb;User=SA;Password=Welkom12345"
+        ports:
+        - containerPort: 80
+          name: efapp
