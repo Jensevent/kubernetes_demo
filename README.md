@@ -82,7 +82,7 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 #validate if its installed
-kubectl version --client
+sudo kubectl version --client
 ```
 >Source: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
 
@@ -112,4 +112,71 @@ chmod +x ./startup.sh
 
 #run the script
 ./startup.sh
+
+#(optional) watch the podscaler
+sudo kubectl get hpa efapp --watch
 ```
+
+# Scalability
+
+## Install jmeter
+```
+#download the .zip under biniaries from https://jmeter.apache.org/download_jmeter.cgi
+
+#extract / unzip the file
+
+#install jre
+sudo apt install default-jre
+
+#go into the bin folder
+cd apache-jmeter-5.4.3/bin
+
+#run jmeter
+./jmeter
+
+```
+> At the time of making this, jmeter is on version 5.4.3
+
+## JMeter configuration
+>NOTE: Given the fact that VM's use the operators CPU, the results of these test may vary.
+
+### Scale to 2
+* Testplan
+  * Threads (Users) > Thread Group
+    * Variables
+      * Number of Threads (users) : 6
+      * Ramp-up period (seconds): 10
+      * Loop Count: 1500
+    * Sampler > HTTP request
+      * Variables
+        * Portocol [http]: http
+        * Server Name or IP: localhost
+        * Port Number: 30000
+        * Type request: GET
+        * Path: /
+    * Listener > Summary Report
+
+Run using the green arrow while the summary Report is open.
+
+
+### Scale to 3
+* Testplan
+  * Threads (Users) > Thread Group
+    * Variables
+      * Number of Threads (users) : 10
+      * Ramp-up period (seconds): 10
+      * Loop Count: 1500
+    * Sampler > HTTP request
+      * Variables
+        * Portocol [http]: http
+        * Server Name or IP: localhost
+        * Port Number: 30000
+        * Type request: GET
+        * Path: /
+    * Listener > Summary Report
+
+Run using the green arrow while the summary Report is open.
+> This test can also be run to to show that the load is distributed between 2 pods when they are created. IF this test is run with 1 pod, it will create 2 more. IF this test is run with 2 pods, there wont be enough load to scale up.
+
+### Downscaling
+**IF** the pod has close to 0 CPU load for ~ 5 min, the pod will automatically be removed.

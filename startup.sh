@@ -33,6 +33,7 @@ sudo kubectl apply -f efapp.yaml
 #EXIT
 cd ..
 
-
+##ADD AUTOSCALER
+sudo kubectl autoscale deployment efapp --cpu-percent=20 --min=1 --max=3
 
 echo 'DONE'
