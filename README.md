@@ -95,6 +95,21 @@ curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.14.0/kind-linux-amd64
 chmod +x ./kind
 
 #move kind to PATH
-mv ./kind /usr/local/bin/kind
+sudo mv ./kind /usr/local/bin/kind
 ```
 >Source: https://kind.sigs.k8s.io/docs/user/quick-start#installation
+
+# Create Full demo
+```
+#clone repo
+git clone https://github.com/Jensevent/kubernetes_demo.git
+
+#go into the folder
+cd kubernetes-demo
+
+#make the startup.sh file runnable
+chmod +x ./startup.sh
+
+#run the script
+./startup.sh
+```
